@@ -38,19 +38,19 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <ShortURLMainComponent/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import ShortURLMainComponent from './components/ShortURLMainComponent.vue';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    ShortURLMainComponent,
   },
 
   data: () => ({
