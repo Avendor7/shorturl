@@ -1,29 +1,38 @@
 <template>
-  <v-container>
-    <v-row align="center" justify="center">
-      <v-col>
-        <h2>ShortURL URL Shortener</h2>
-        <p>Created using Vue2, Vuetify, and the shortco.de API</p>
-        <v-text-field
-            v-model="url"
-            :rules="urlRules"
-            counter="256"
-            hint="https://google.ca"
-            label="Shorten URL"
-          ></v-text-field>
-          <v-btn elevation="2" v-on:click="getURL()">Shorten</v-btn>
+  <div>
+    <v-container>
+      <v-row align="center" justify="center">
+        <v-col>
+          <v-text-field
+              ref="form"
+              v-model="url"
+              :rules="urlRules"
+              counter="256"
+              label="Shorten URL"
+            ></v-text-field>
+            <v-btn elevation="2" v-on:click="getURL()">Shorten</v-btn>
+        </v-col>
+        
+      </v-row>
+      <v-row align="center" justify="center">
+        <v-col class="d-flex justify-center">
+          <div v-show="shortenedURL">
+            <v-text-field v-on:focus="$event.target.select()" ref="shorturl" v-bind:value="shortenedURL"></v-text-field>
+            <v-btn elevation="2" v-on:click="copyToClipboard()">Copy to Clipboard</v-btn>
+        </div>
+        </v-col>
+      </v-row>
+    
+    </v-container>
+    <v-footer bottom fixed>
+      <v-col
+        class="text-center"
+        cols="12"
+      >
+      Created using Vue2, Vuetify, and the <a href="https://shrtco.de" target="_blank">shrtco.de</a> API
       </v-col>
-      
-    </v-row>
-    <v-row align="center" justify="center">
-      <v-col class="d-flex justify-center">
-        <div v-show="shortenedURL">
-          <v-text-field v-on:focus="$event.target.select()" ref="shorturl" v-bind:value="shortenedURL"></v-text-field>
-          <v-btn elevation="2" v-on:click="copyToClipboard()">Copy to Clipboard</v-btn>
-      </div>
-      </v-col>
-    </v-row>
-  </v-container>
+    </v-footer>
+  </div>
 </template>
 
 <script>
@@ -38,19 +47,22 @@ import axios from 'axios';
     },
     methods: {
       getURL(){
-        const url = "https://api.shrtco.de/v2/shorten?url="+ this.url;
-        axios.get(url)
-          .then(response => {
-              this.shortenedURL = response.data.result.full_short_link
-          })
-          .catch(async function (error) {
-              const message = {
-                  ErrorMessage: error.message,
-                  Component: 'CustomerSelectorComponent',
-                  APIRoute: url
-              }
-              alert("Request Failed: " + message.ErrorMessage);
-          });
+        
+        if (this.$refs.form.validate()){
+          const url = "https://api.shrtco.de/v2/shorten?url="+ this.url;
+          axios.get(url)
+            .then(response => {
+                this.shortenedURL = response.data.result.full_short_link
+            })
+            .catch(async function (error) {
+                const message = {
+                    ErrorMessage: error.message,
+                    Component: 'CustomerSelectorComponent',
+                    APIRoute: url
+                }
+                alert("Request Failed: " + message.ErrorMessage);
+            });
+        }
       },
       copyToClipboard(){
         this.$refs.shorturl.focus();
@@ -59,8 +71,7 @@ import axios from 'axios';
     },
     data () {
       return {
-        url: 'https://google.ca',
-        description: 'California is a state in the western United States',
+        url: null,
         urlRules: [
           v => !!v || 'URL is required',
           v => (v && v.length <= 256) || 'URL must be less than 256 characters', /* eslint-disable-next-line no-useless-escape*/
