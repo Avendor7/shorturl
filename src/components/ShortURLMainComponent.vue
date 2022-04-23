@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
+    <v-row align="center" justify="center">
+      <v-col>
         <h2>ShortURL URL Shortener</h2>
         <p>Created using Vue2, Vuetify, and the shortco.de API</p>
         <v-text-field
@@ -13,9 +13,15 @@
           ></v-text-field>
           <v-btn elevation="2" v-on:click="getURL()">Shorten</v-btn>
       </v-col>
-      <h1><a v-bind:href="shortenedURL">{{shortenedURL}}</a></h1>
       
-        
+    </v-row>
+    <v-row align="center" justify="center">
+      <v-col>
+        <div v-show="shortenedURL">
+          <v-text-field v-on:focus="$event.target.select()" ref="shorturl" v-bind:value="shortenedURL"></v-text-field>
+          <v-btn elevation="2" v-on:click="copyToClipboard()">Copy to Clipboard</v-btn>
+      </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -35,8 +41,6 @@ import axios from 'axios';
         const url = "https://api.shrtco.de/v2/shorten?url="+ this.url;
         axios.get(url)
           .then(response => {
-              //send to the copy thingy
-              console.log(response.data.result.full_short_link);
               this.shortenedURL = response.data.result.full_short_link
           })
           .catch(async function (error) {
@@ -47,6 +51,10 @@ import axios from 'axios';
               }
               alert("Request Failed: " + message.ErrorMessage);
           });
+      },
+      copyToClipboard(){
+        this.$refs.shorturl.focus();
+        document.execCommand('copy');
       }
     },
     data () {
