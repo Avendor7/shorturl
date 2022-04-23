@@ -16,7 +16,7 @@
       
     </v-row>
     <v-row align="center" justify="center">
-      <v-col>
+      <v-col class="d-flex justify-center">
         <div v-show="shortenedURL">
           <v-text-field v-on:focus="$event.target.select()" ref="shorturl" v-bind:value="shortenedURL"></v-text-field>
           <v-btn elevation="2" v-on:click="copyToClipboard()">Copy to Clipboard</v-btn>
