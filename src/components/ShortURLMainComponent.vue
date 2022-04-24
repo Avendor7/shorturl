@@ -52,7 +52,11 @@ import axios from 'axios';
           const url = "https://api.shrtco.de/v2/shorten?url="+ this.url;
           axios.get(url)
             .then(response => {
-                this.shortenedURL = response.data.result.full_short_link
+              if (response.result.error_code == null){
+                alert(response.result.error_code);
+              }else{
+                this.shortenedURL = response.data.result.full_short_link;
+              }
             })
             .catch(async function (error) {
                 const message = {
